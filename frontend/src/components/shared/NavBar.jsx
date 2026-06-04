@@ -59,10 +59,12 @@ export function NavBar() {
 
           {isAuthenticated ? (
             <>
-              <span className="inline-flex items-center gap-1 px-3 py-2 text-sm font-semibold text-slate-500">
-                <User aria-hidden="true" size={15} />
-                {user?.name}
-              </span>
+              <NavLink className={navClass} to="/account/profile">
+                <span className="inline-flex items-center gap-1">
+                  <User aria-hidden="true" size={15} />
+                  {user?.name}
+                </span>
+              </NavLink>
               <button
                 className="inline-flex items-center gap-1 rounded-xl px-3 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-50"
                 type="button"

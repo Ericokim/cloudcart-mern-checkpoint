@@ -38,6 +38,11 @@ export function AuthProvider({ children }) {
     return data;
   }
 
+  function updateUser(nextUser) {
+    setUser(nextUser);
+    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(nextUser));
+  }
+
   function logout() {
     setUser(null);
     setToken(null);
@@ -53,6 +58,7 @@ export function AuthProvider({ children }) {
       isAdmin: Boolean(user?.isAdmin),
       login,
       register,
+      updateUser,
       logout
     }),
     [user, token]
