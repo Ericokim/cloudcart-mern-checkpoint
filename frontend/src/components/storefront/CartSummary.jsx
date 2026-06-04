@@ -12,7 +12,7 @@ export function CartSummary() {
   const isEmpty = cart.length === 0;
 
   return (
-    <aside className="sticky top-5 grid content-start gap-4 rounded-2xl bg-white p-5 ring-1 ring-slate-200 max-lg:static">
+    <aside className="sticky top-5 grid grid-cols-1 content-start gap-4 rounded-2xl bg-white p-5 ring-1 ring-slate-200 max-lg:static">
       <div className="flex items-center justify-between gap-3">
         <h2 className="inline-flex items-center gap-2 text-xl font-bold text-slate-900">
           <ShoppingBag aria-hidden="true" size={20} />
@@ -31,9 +31,9 @@ export function CartSummary() {
           </p>
         </div>
       ) : (
-        <ul className="grid gap-3">
+        <ul className="grid grid-cols-1 gap-3">
           {cart.map((item) => (
-            <li className="flex items-center gap-3" key={item.productId}>
+            <li className="flex min-w-0 items-center gap-3" key={item.productId}>
               <img
                 className="h-12 w-12 shrink-0 rounded-xl object-cover ring-1 ring-slate-200"
                 src={item.image || FALLBACK_IMAGE}
