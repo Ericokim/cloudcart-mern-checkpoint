@@ -32,10 +32,23 @@ app.use("/api", apiRoutes);
 
 if (process.env.NODE_ENV === "production") {
   const publicPath = path.join(__dirname, "public");
+  const indexPath = path.join(publicPath, "index.html");
+
   app.use(express.static(publicPath));
 
   app.get("*", (req, res) => {
-    res.sendFile(path.join(publicPath, "index.html"));
+    res.sendFile(indexPath, (error) => {
+      if (error && error.code === "ENOENT") {
+        res.status(500).json({
+          message: "Frontend build is missing. Run npm run build before deploying."
+        });
+        return;
+      }
+
+      if (error) {
+        res.status(error.status || 500).end();
+      }
+    });
   });
 }
 
