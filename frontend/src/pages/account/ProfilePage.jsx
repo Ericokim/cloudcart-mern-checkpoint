@@ -1,6 +1,7 @@
 import { LogOut, Mail, Package, ShieldCheck, User } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { PasswordInput } from "../../components/shared/PasswordInput";
 import { Toast } from "../../components/shared/Toast";
 import { useAuth } from "../../context/AuthContext";
 import { getErrorMessage } from "../../lib/api/client";
@@ -148,10 +149,9 @@ export function ProfilePage() {
         <form className="grid gap-4" onSubmit={handlePasswordSubmit}>
           <label className="grid gap-2 text-sm font-bold text-slate-900" htmlFor="currentPassword">
             Current password
-            <input
-              className={inputClass}
+            <PasswordInput
               id="currentPassword"
-              type="password"
+              autoComplete="current-password"
               value={currentPassword}
               onChange={(event) => setCurrentPassword(event.target.value)}
               placeholder="••••••••"
@@ -159,10 +159,9 @@ export function ProfilePage() {
           </label>
           <label className="grid gap-2 text-sm font-bold text-slate-900" htmlFor="newPassword">
             New password
-            <input
-              className={inputClass}
+            <PasswordInput
               id="newPassword"
-              type="password"
+              autoComplete="new-password"
               value={newPassword}
               onChange={(event) => setNewPassword(event.target.value)}
               placeholder="At least 6 characters"
@@ -170,10 +169,9 @@ export function ProfilePage() {
           </label>
           <label className="grid gap-2 text-sm font-bold text-slate-900" htmlFor="confirmPassword">
             Confirm new password
-            <input
-              className={inputClass}
+            <PasswordInput
               id="confirmPassword"
-              type="password"
+              autoComplete="new-password"
               value={confirmPassword}
               onChange={(event) => setConfirmPassword(event.target.value)}
               placeholder="••••••••"
