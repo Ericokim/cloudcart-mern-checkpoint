@@ -1,11 +1,23 @@
 # CloudCart MERN Checkpoint
 
-CloudCart is a small MERN e-commerce application prepared for local development with the same root-driven structure as the Survey app. It uses:
+**CloudCart** is a full-stack e-commerce application built with the MERN stack (MongoDB, Express, React, Node.js). It provides a modern, responsive shopping experience with product browsing, filtering, and order management capabilities.
 
-- MongoDB Atlas for data storage.
-- Express and Mongoose for the backend.
-- React, Vite, Axios, and Tailwind CSS for the frontend.
-- Vercel project configuration.
+## 🚀 Live Demo
+
+**Deployed Application:** [https://cloudcart-h5dnebegeba4gehp.southafricanorth-01.azurewebsites.net/](https://cloudcart-h5dnebegeba4gehp.southafricanorth-01.azurewebsites.net/)
+
+Hosted on Azure App Service with continuous deployment via GitHub Actions.
+
+![CloudCart Azure Deployment](assets/cloudcart-deployed.png)
+
+## Tech Stack
+
+- **Database:** MongoDB Atlas for scalable data storage
+- **Backend:** Node.js, Express.js with Mongoose ODM
+- **Frontend:** React with Vite for fast development and optimized builds
+- **Styling:** Tailwind CSS with a warm, card-based UI theme
+- **HTTP Client:** Axios for seamless API communication
+- **Deployment:** Azure App Service with CI/CD via GitHub Actions
 
 ## Project Structure
 
