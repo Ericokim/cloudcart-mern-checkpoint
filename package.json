@@ -1,0 +1,29 @@
+{
+  "name": "cloudcart-mern-checkpoint",
+  "version": "1.0.0",
+  "main": "server.js",
+  "description": "CloudCart MERN e-commerce app with local concurrent dev and Vercel deployment support.",
+  "scripts": {
+    "install:all": "npm install && npm install --prefix frontend",
+    "start": "node backend/server.js",
+    "server": "nodemon backend/server.js",
+    "client": "npm run dev --prefix frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "data:import": "node backend/seeder.js",
+    "data:destroy": "node backend/seeder.js -d",
+    "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend",
+    "check": "node --check backend/server.js && node --check backend/config/db.js && node --check backend/config/appState.js && node --check backend/data/products.js && node --check backend/seeders/productSeeder.js && node --check backend/seeder.js && node --check backend/controllers/healthController.js && node --check backend/controllers/productController.js && node --check backend/controllers/orderController.js && node --check backend/routes/index.js && node --check backend/routes/products.routes.js && node --check backend/routes/orders.routes.js && node --check backend/middleware/asyncHandler.js && node --check backend/middleware/errorMiddleware.js && node --check backend/middleware/orderMiddleware.js && node --check backend/models/Product.js && node --check backend/models/Order.js",
+    "vercel-build": "npm run build"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongoose": "^8.9.5"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "nodemon": "^3.1.9"
+  },
+  "license": "ISC"
+}
