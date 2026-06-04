@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthLayout } from "../../components/shared/AuthLayout";
+import { PasswordInput } from "../../components/shared/PasswordInput";
 import { Toast } from "../../components/shared/Toast";
 import { useAuth } from "../../context/AuthContext";
 import { getErrorMessage } from "../../lib/api/client";
@@ -13,6 +15,7 @@ export function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [toast, setToast] = useState({ message: "", type: "info" });
 
@@ -20,6 +23,14 @@ export function RegisterPage() {
     event.preventDefault();
     if (!name.trim() || !email.trim() || !password) {
       setToast({ message: "Enter your name, email, and password.", type: "error" });
+      return;
+    }
+    if (password.length < 6) {
+      setToast({ message: "Password must be at least 6 characters.", type: "error" });
+      return;
+    }
+    if (password !== confirmPassword) {
+      setToast({ message: "Passwords do not match.", type: "error" });
       return;
     }
 
@@ -37,7 +48,7 @@ export function RegisterPage() {
   }
 
   return (
-    <main className="mx-auto grid min-h-[70vh] max-w-md content-center gap-5 px-4 py-10">
+    <AuthLayout>
       <Toast message={toast.message} type={toast.type} />
       <div className="grid gap-5 rounded-2xl bg-white p-6 ring-1 ring-slate-200">
         <div>
@@ -51,6 +62,7 @@ export function RegisterPage() {
             <input
               className={inputClass}
               id="name"
+              autoComplete="name"
               value={name}
               onChange={(event) => setName(event.target.value)}
               placeholder="Amina"
@@ -63,6 +75,7 @@ export function RegisterPage() {
               className={inputClass}
               id="email"
               type="email"
+              autoComplete="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               placeholder="you@example.com"
@@ -71,13 +84,23 @@ export function RegisterPage() {
 
           <label className="grid gap-2 text-sm font-bold text-slate-900" htmlFor="password">
             Password
-            <input
-              className={inputClass}
+            <PasswordInput
               id="password"
-              type="password"
+              autoComplete="new-password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               placeholder="At least 6 characters"
+            />
+          </label>
+
+          <label className="grid gap-2 text-sm font-bold text-slate-900" htmlFor="confirmPassword">
+            Confirm password
+            <PasswordInput
+              id="confirmPassword"
+              autoComplete="new-password"
+              value={confirmPassword}
+              onChange={(event) => setConfirmPassword(event.target.value)}
+              placeholder="Re-enter your password"
             />
           </label>
 
@@ -97,6 +120,6 @@ export function RegisterPage() {
           </Link>
         </p>
       </div>
-    </main>
+    </AuthLayout>
   );
 }

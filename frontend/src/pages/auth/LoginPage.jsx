@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { AuthLayout } from "../../components/shared/AuthLayout";
+import { PasswordInput } from "../../components/shared/PasswordInput";
 import { Toast } from "../../components/shared/Toast";
 import { useAuth } from "../../context/AuthContext";
 import { getErrorMessage } from "../../lib/api/client";
@@ -38,7 +40,7 @@ export function LoginPage() {
   }
 
   return (
-    <main className="mx-auto grid min-h-[70vh] max-w-md content-center gap-5 px-4 py-10">
+    <AuthLayout>
       <Toast message={toast.message} type={toast.type} />
       <div className="grid gap-5 rounded-2xl bg-white p-6 ring-1 ring-slate-200">
         <div>
@@ -53,6 +55,7 @@ export function LoginPage() {
               className={inputClass}
               id="email"
               type="email"
+              autoComplete="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               placeholder="you@example.com"
@@ -61,10 +64,9 @@ export function LoginPage() {
 
           <label className="grid gap-2 text-sm font-bold text-slate-900" htmlFor="password">
             Password
-            <input
-              className={inputClass}
+            <PasswordInput
               id="password"
-              type="password"
+              autoComplete="current-password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               placeholder="••••••••"
@@ -87,6 +89,6 @@ export function LoginPage() {
           </Link>
         </p>
       </div>
-    </main>
+    </AuthLayout>
   );
 }
