@@ -4,14 +4,16 @@ import { CartPanel } from "../../components/storefront/CartPanel";
 import { Hero } from "../../components/storefront/Hero";
 import { ProductFilters } from "../../components/storefront/ProductFilters";
 import { ProductGrid } from "../../components/storefront/ProductGrid";
-import { useCart } from "../../hooks/useCart";
+import { useAuth } from "../../context/AuthContext";
+import { useCartContext } from "../../context/CartContext";
 import { useProducts } from "../../hooks/useProducts";
 import { createOrder } from "../../lib/api/orders";
 import { getErrorMessage } from "../../lib/api/client";
 
 export function StorefrontPage() {
-  const [customerName, setCustomerName] = useState("");
-  const [customerEmail, setCustomerEmail] = useState("");
+  const { user } = useAuth();
+  const [customerName, setCustomerName] = useState(user?.name || "");
+  const [customerEmail, setCustomerEmail] = useState(user?.email || "");
   const [customerPhone, setCustomerPhone] = useState("");
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [filters, setFilters] = useState({
@@ -21,7 +23,12 @@ export function StorefrontPage() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { isLoading, loadProducts, products, setToast, toast } = useProducts(filters);
-  const { addToCart, cart, clearCart, removeFromCart, total, updateQuantity } = useCart();
+  const { addToCart, cart, clearCart, removeFromCart, total, updateQuantity } = useCartContext();
+
+  function handleAddToCart(product) {
+    addToCart(product);
+    setToast({ message: `Added ${product.name} to cart.`, type: "success" });
+  }
 
   function updateFilter(event) {
     const { name, value } = event.target;
@@ -78,7 +85,7 @@ export function StorefrontPage() {
   }
 
   return (
-    <main className="mx-auto grid min-h-screen max-w-6xl gap-5 px-4 py-6">
+    <main className="mx-auto grid max-w-6xl content-start gap-6 px-4 py-6">
       <Toast message={toast.message} type={toast.type} />
       <Hero />
 
@@ -94,7 +101,7 @@ export function StorefrontPage() {
           <ProductGrid
             isLoading={isLoading}
             products={products}
-            onAddToCart={addToCart}
+            onAddToCart={handleAddToCart}
             onRefresh={loadProducts}
           />
         </div>

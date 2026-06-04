@@ -69,9 +69,12 @@ export function CartPanel({
       {step === "cart" ? (
         <>
           {cart.length === 0 ? (
-            <p className="rounded-2xl bg-slate-50 p-4 text-sm font-semibold text-slate-500">
-              No items yet.
-            </p>
+            <div className="rounded-2xl bg-slate-50 p-4 text-sm font-semibold text-slate-500">
+              <p className="text-slate-700">Your cart is empty.</p>
+              <p className="mt-1 font-medium text-slate-500">
+                Browse the products and select <span className="font-semibold">Add to cart</span> to get started.
+              </p>
+            </div>
           ) : (
             <ul className="grid gap-3">
               {cart.map((item) => (

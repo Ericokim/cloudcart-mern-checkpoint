@@ -1,17 +1,24 @@
 import { ShoppingCart } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export function ProductCard({ onAddToCart, product }) {
   return (
-    <article className="grid gap-4 overflow-hidden rounded-2xl bg-white p-4 ring-1 ring-slate-200 transition hover:-translate-y-0.5">
-      <img
-        className="aspect-[4/3] w-full rounded-2xl object-cover"
-        src={product.image}
-        alt={product.name}
-      />
+    <article className="grid grid-rows-[auto_1fr_auto_auto] gap-4 overflow-hidden rounded-2xl bg-white p-4 ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:ring-slate-300">
+      <Link to={`/products/${product._id}`}>
+        <img
+          className="aspect-[4/3] w-full rounded-2xl object-cover"
+          src={product.image}
+          alt={product.name}
+        />
+      </Link>
 
       <div>
-        <h3 className="text-xl font-bold text-slate-900">{product.name}</h3>
-        <p className="mt-2 text-sm leading-6 text-slate-600">{product.description}</p>
+        <Link to={`/products/${product._id}`}>
+          <h3 className="text-xl font-bold text-slate-900 transition hover:text-amber-600">
+            {product.name}
+          </h3>
+        </Link>
+        <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-600">{product.description}</p>
       </div>
 
       <div className="flex items-center justify-between gap-3 text-sm">

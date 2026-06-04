@@ -11,6 +11,16 @@ const apiClient = axios.create({
   }
 });
 
+export const TOKEN_STORAGE_KEY = "cloudcart_token";
+
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem(TOKEN_STORAGE_KEY);
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 export function getErrorMessage(error, fallback = "Something went wrong.") {
   return error.response?.data?.message || error.message || fallback;
 }

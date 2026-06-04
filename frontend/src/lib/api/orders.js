@@ -5,3 +5,8 @@ export async function createOrder(order) {
   return data;
 }
 
+export async function getMyOrders() {
+  const { data } = await apiClient.get("/orders/mine");
+  return data;
+}
+

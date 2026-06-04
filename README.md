@@ -106,12 +106,12 @@ Backend:
 npm run server
 ```
 
-The backend exposes:
+The backend exposes (among others):
 
 - `GET /api/health`
-- `GET /api/products`
-- `POST /api/orders`
-- `GET /api/orders`
+- `GET /api/products` and `GET /api/products/:id`
+- `POST /api/auth/register`, `POST /api/auth/login`
+- `POST /api/orders`, `GET /api/orders`
 
 ### Optional: Reset Seed Data
 
@@ -146,26 +146,21 @@ VITE_API_BASE=<server-url>
 
 ## Production Build
 
-Build the React frontend:
+From the project root, build the frontend and copy its output into the folder Express serves in production (`backend/public`):
 
 ```bash
-cd frontend
 npm run build
 ```
 
-Copy the build output into the backend public folder:
-
-```bash
-mkdir -p ../backend/public
-cp -R dist/* ../backend/public/
-```
+This single command installs root + frontend dependencies, runs the Vite build, and copies `frontend/dist` into `backend/public`.
 
 Start the production server:
 
 ```bash
-cd ..
 NODE_ENV=production npm start
 ```
+
+In production (`NODE_ENV=production`) Express serves the static build from `backend/public` and falls back to `index.html` for any non-`/api` route, so client-side deep links such as `/products/:id`, `/login`, `/admin/products`, and `/account/orders` work on direct load and refresh. `/api/*` routes continue to return JSON. The server listens on `process.env.PORT` (Azure provides this automatically) and falls back to `5001` locally.
 
 ## MongoDB Atlas Setup
 
@@ -176,28 +171,29 @@ NODE_ENV=production npm start
 5. Copy the connection string.
 6. Set the connection string as `MONGO_URI`.
 
-## Vercel
+## Azure Deployment
 
-This project keeps `vercel.json` minimal like the Survey app. Configure `MONGO_URI` in Vercel if you later add a Vercel backend route or deploy the backend separately.
+CloudCart deploys to **Azure App Service** via GitHub Actions (`.github/workflows/main_cloudcart.yml`). On every push to `main` the workflow:
 
-In Vercel project settings, configure:
+1. Installs dependencies (`npm install`).
+2. Runs `npm run build`, which builds the frontend and copies it into `backend/public`.
+3. Runs `npm run check` (syntax check) and verifies `backend/public/index.html` exists.
+4. Deploys the whole repo to the `cloudcart` App Service.
+
+Azure runs `npm start` (the `main` field is `backend/server.js`) and supplies `PORT` automatically.
+
+### Required Azure App Service configuration
+
+Set these as Application Settings (environment variables) in the Azure portal. Do **not** commit real secrets.
 
 ```txt
-MONGO_URI=<your-mongodb-atlas-connection-string>
 NODE_ENV=production
+MONGO_URI=<your-mongodb-atlas-connection-string>
+JWT_SECRET=<your-jwt-secret>
+JWT_EXPIRY=24h
 ```
 
-Then deploy from the project root:
-
-```bash
-vercel
-```
-
-For production:
-
-```bash
-vercel --prod
-```
+`CLIENT_URL` is only needed for local cross-origin development; production is same-origin and does not require it. If `MONGO_URI` is omitted the app runs in in-memory demo mode.
 
 ## Deployment Test Checklist
 
@@ -210,4 +206,4 @@ vercel --prod
 
 ## Notes
 
-This project intentionally avoids authentication and payments. The checkpoint goal is to prove that a MERN app can be prepared, configured, deployed, and tested.
+This project includes JWT-based authentication (with bcrypt password hashing) and client-side routing via `react-router-dom`, but intentionally avoids real payments. The checkpoint goal is to prove that a MERN app can be prepared, configured, deployed, and tested.

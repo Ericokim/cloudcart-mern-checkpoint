@@ -2,7 +2,7 @@
   "name": "cloudcart-mern-checkpoint",
   "version": "1.0.0",
   "main": "backend/server.js",
-  "description": "CloudCart MERN e-commerce app with local concurrent dev and Vercel deployment support.",
+  "description": "CloudCart MERN e-commerce app with local concurrent dev and Azure App Service deployment.",
   "engines": {
     "node": "22.x"
   },
@@ -15,13 +15,14 @@
     "data:import": "node backend/seeder.js",
     "data:destroy": "node backend/seeder.js -d",
     "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend && mkdir -p backend/public && cp -R frontend/dist/. backend/public/",
-    "check": "node --check backend/server.js && node --check backend/config/db.js && node --check backend/config/appState.js && node --check backend/data/products.js && node --check backend/seeders/productSeeder.js && node --check backend/seeder.js && node --check backend/controllers/healthController.js && node --check backend/controllers/productController.js && node --check backend/controllers/orderController.js && node --check backend/routes/index.js && node --check backend/routes/products.routes.js && node --check backend/routes/orders.routes.js && node --check backend/middleware/asyncHandler.js && node --check backend/middleware/errorMiddleware.js && node --check backend/middleware/orderMiddleware.js && node --check backend/models/Product.js && node --check backend/models/Order.js",
-    "vercel-build": "npm run build"
+    "check": "node --check backend/server.js && node --check backend/config/db.js && node --check backend/config/appState.js && node --check backend/data/products.js && node --check backend/seeders/productSeeder.js && node --check backend/seeder.js && node --check backend/controllers/healthController.js && node --check backend/controllers/productController.js && node --check backend/controllers/orderController.js && node --check backend/routes/index.js && node --check backend/routes/products.routes.js && node --check backend/routes/orders.routes.js && node --check backend/middleware/asyncHandler.js && node --check backend/middleware/errorMiddleware.js && node --check backend/middleware/orderMiddleware.js && node --check backend/middleware/productMiddleware.js && node --check backend/middleware/authMiddleware.js && node --check backend/middleware/authValidation.js && node --check backend/controllers/authController.js && node --check backend/routes/auth.routes.js && node --check backend/models/Product.js && node --check backend/models/Order.js && node --check backend/models/User.js"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.9.5"
   },
   "devDependencies": {

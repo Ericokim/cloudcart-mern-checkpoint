@@ -1,7 +1,22 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
+const CART_STORAGE_KEY = "cloudcart_cart";
+
+function readStoredCart() {
+  try {
+    const raw = localStorage.getItem(CART_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
 
 export function useCart() {
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState(readStoredCart);
+
+  useEffect(() => {
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+  }, [cart]);
 
   function addToCart(product) {
     setCart((items) => {

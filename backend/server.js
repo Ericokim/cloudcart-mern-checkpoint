@@ -36,7 +36,14 @@ if (process.env.NODE_ENV === "production") {
 
   app.use(express.static(publicPath));
 
-  app.get("*", (req, res) => {
+  // SPA fallback: serve index.html for non-API GET routes so client-side
+  // deep links (e.g. /products/:id, /login, /admin/products) and refreshes
+  // don't 404. API routes are excluded so they keep returning JSON.
+  app.get("*", (req, res, next) => {
+    if (req.path.startsWith("/api")) {
+      return next();
+    }
+
     res.sendFile(indexPath, (error) => {
       if (error && error.code === "ENOENT") {
         res.status(500).json({

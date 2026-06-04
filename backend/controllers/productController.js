@@ -89,4 +89,111 @@ async function getProducts(req, res) {
   res.json(products);
 }
 
-module.exports = { getProducts, memoryProducts };
+async function getProductById(req, res) {
+  if (isMemoryMode()) {
+    const product = memoryProducts.find((entry) => entry._id === req.params.id);
+
+    if (!product) {
+      res.status(404);
+      throw new Error("Product not found.");
+    }
+
+    return res.json(product);
+  }
+
+  const product = await Product.findById(req.params.id);
+
+  if (!product) {
+    res.status(404);
+    throw new Error("Product not found.");
+  }
+
+  res.json(product);
+}
+
+function buildProductPayload(body) {
+  return {
+    name: body.name,
+    description: body.description,
+    price: Number(body.price),
+    stock: Number(body.stock),
+    image: body.image || ""
+  };
+}
+
+async function createProduct(req, res) {
+  const payload = buildProductPayload(req.body);
+
+  if (isMemoryMode()) {
+    const product = {
+      ...payload,
+      _id: `product-${Date.now()}`
+    };
+
+    memoryProducts.push(product);
+    return res.status(201).json(product);
+  }
+
+  const product = await Product.create(payload);
+  res.status(201).json(product);
+}
+
+async function updateProduct(req, res) {
+  const payload = buildProductPayload(req.body);
+
+  if (isMemoryMode()) {
+    const product = memoryProducts.find((entry) => entry._id === req.params.id);
+
+    if (!product) {
+      res.status(404);
+      throw new Error("Product not found.");
+    }
+
+    Object.assign(product, payload);
+    return res.json(product);
+  }
+
+  const product = await Product.findById(req.params.id);
+
+  if (!product) {
+    res.status(404);
+    throw new Error("Product not found.");
+  }
+
+  Object.assign(product, payload);
+  await product.save();
+  res.json(product);
+}
+
+async function deleteProduct(req, res) {
+  if (isMemoryMode()) {
+    const index = memoryProducts.findIndex((entry) => entry._id === req.params.id);
+
+    if (index === -1) {
+      res.status(404);
+      throw new Error("Product not found.");
+    }
+
+    memoryProducts.splice(index, 1);
+    return res.json({ message: "Product removed." });
+  }
+
+  const product = await Product.findById(req.params.id);
+
+  if (!product) {
+    res.status(404);
+    throw new Error("Product not found.");
+  }
+
+  await product.deleteOne();
+  res.json({ message: "Product removed." });
+}
+
+module.exports = {
+  getProducts,
+  getProductById,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+  memoryProducts
+};

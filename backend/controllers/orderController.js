@@ -1,9 +1,27 @@
+const jwt = require("jsonwebtoken");
 const Order = require("../models/Order");
 const Product = require("../models/Product");
 const { isMemoryMode } = require("../config/appState");
 const { memoryProducts } = require("./productController");
 
 let memoryOrders = [];
+
+// Resolve an optional logged-in user id from a Bearer token without
+// rejecting guest checkout. Returns null when absent or invalid.
+function resolveOptionalUserId(req) {
+  const authHeader = req.headers.authorization || "";
+
+  if (!authHeader.startsWith("Bearer ")) {
+    return null;
+  }
+
+  try {
+    const decoded = jwt.verify(authHeader.split(" ")[1], process.env.JWT_SECRET);
+    return decoded.id;
+  } catch (error) {
+    return null;
+  }
+}
 
 function buildOrderItems(items, products, shouldUpdateStock = false) {
   return items.map((item) => {
@@ -48,17 +66,20 @@ async function getOrders(req, res) {
 
 async function createOrder(req, res) {
   const { customerEmail, customerName, customerPhone, deliveryAddress, items } = req.body;
+  const userId = resolveOptionalUserId(req);
 
   if (isMemoryMode()) {
     const orderItems = buildOrderItems(items, memoryProducts, true);
     const order = {
       _id: `order-${Date.now()}`,
+      user: userId,
       customerEmail,
       customerName,
       customerPhone,
       deliveryAddress,
       items: orderItems,
       total: calculateTotal(orderItems),
+      status: "Processing",
       createdAt: new Date().toISOString()
     };
 
@@ -70,6 +91,7 @@ async function createOrder(req, res) {
   const products = await Product.find({ _id: { $in: productIds } });
   const orderItems = buildOrderItems(items, products);
   const order = await Order.create({
+    user: userId,
     customerEmail,
     customerName,
     customerPhone,
@@ -87,4 +109,15 @@ async function createOrder(req, res) {
   res.status(201).json(order);
 }
 
-module.exports = { createOrder, getOrders };
+async function getMyOrders(req, res) {
+  const userId = req.user._id.toString();
+
+  if (isMemoryMode()) {
+    return res.json(memoryOrders.filter((order) => order.user === userId));
+  }
+
+  const orders = await Order.find({ user: userId }).sort({ createdAt: -1 });
+  res.json(orders);
+}
+
+module.exports = { createOrder, getOrders, getMyOrders };
